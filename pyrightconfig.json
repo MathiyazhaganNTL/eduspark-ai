@@ -1,0 +1,5 @@
+{
+  "venvPath": "d:/eduspark-ai",
+  "venv": "venv",
+  "extraPaths": ["d:/eduspark-ai/venv/Lib/site-packages", "venv/Lib/site-packages"]
+}

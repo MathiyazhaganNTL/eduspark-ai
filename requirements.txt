@@ -1,0 +1,13 @@
+fastapi
+uvicorn[standard]
+python-multipart
+pydantic
+openai-whisper
+torch
+transformers
+sentence-transformers
+faiss-cpu
+pytesseract
+pdfplumber
+Pillow
+requests
