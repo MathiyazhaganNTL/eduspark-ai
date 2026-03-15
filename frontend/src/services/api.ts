@@ -11,6 +11,7 @@ export const setBaseUrl = (url: string) => {
 };
 
 const api = () => axios.create({ baseURL: getBaseUrl(), timeout: 30000 });
+const apiLong = () => axios.create({ baseURL: getBaseUrl(), timeout: 300000 }); // 5 min for Whisper/LLaVA
 
 export interface HealthResponse {
   status: string;
@@ -29,6 +30,7 @@ export interface InsightResult {
   suggested_activity: string;
   required_materials: string[];
   activity_duration: string;
+  extracted_files?: { file_name: string; content: string }[];
 }
 
 export const fetchHealth = async (): Promise<HealthResponse> => {
@@ -41,11 +43,16 @@ export const analyzeObservation = async (payload: AnalyzeRequest): Promise<Insig
   return data;
 };
 
-export const uploadFile = async (file: File, language?: string): Promise<InsightResult[]> => {
+export const uploadFiles = async (
+  files: File[],
+  language?: string,
+  text?: string
+): Promise<InsightResult[]> => {
   const formData = new FormData();
-  formData.append("file", file);
+  files.forEach((f) => formData.append("files", f));
   if (language) formData.append("language", language);
-  const { data } = await api().post("/teacher/upload", formData, {
+  if (text) formData.append("text", text);
+  const { data } = await apiLong().post("/teacher/upload", formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
   return data;

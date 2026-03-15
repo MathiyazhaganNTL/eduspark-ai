@@ -14,31 +14,27 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from api.routes import router
+from database.db import engine
+from database.models import Base
 
-# ---------------------------------------------------------------------------
-# Logging
-# ---------------------------------------------------------------------------
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s  %(levelname)-8s  %(name)s  %(message)s",
 )
-
 logger = logging.getLogger(__name__)
 
-# ---------------------------------------------------------------------------
-# App Lifespan
-# ---------------------------------------------------------------------------
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # Create all DB tables if they don't exist
+    Base.metadata.create_all(bind=engine)
     logger.info("═══════════════════════════════════════════════")
     logger.info("  EduSpark AI backend starting …")
     logger.info("  Docs:  http://localhost:8000/docs")
     logger.info("═══════════════════════════════════════════════")
     yield
 
-# ---------------------------------------------------------------------------
-# App
-# ---------------------------------------------------------------------------
+
 app = FastAPI(
     title="EduSpark AI",
     description="Local AI-powered backend for classroom observation analysis.",
@@ -46,7 +42,6 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# Allow the Vite dev server (port 8080) and any other local origin
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -55,5 +50,4 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Register routes at the root (no prefix) so endpoints are /health, /teacher/analyze, etc.
 app.include_router(router)

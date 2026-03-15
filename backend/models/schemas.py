@@ -1,23 +1,10 @@
 """
-Pydantic schemas that define the API request / response shapes.
-These must match the frontend TypeScript interfaces exactly.
+Pydantic schemas — API request / response shapes.
 """
 
 from __future__ import annotations
 
-from pydantic import BaseModel, Field
-
-
-# ---------- Health ----------
-class HealthModels(BaseModel):
-    """Status of each AI sub-system."""
-    ollama_llm: str = Field(alias="Ollama (LLM)")
-    whisper_stt: str = Field(alias="Whisper (Speech-to-Text)")
-    nllb_translation: str = Field(alias="NLLB (Translation)")
-    tesseract_ocr: str = Field(alias="Tesseract (OCR)")
-
-    class Config:
-        populate_by_name = True
+from pydantic import BaseModel
 
 
 class HealthResponse(BaseModel):
@@ -25,7 +12,6 @@ class HealthResponse(BaseModel):
     models: dict[str, str]
 
 
-# ---------- Analyze ----------
 class AnalyzeRequest(BaseModel):
     text: str
     language: str = "en"
@@ -38,3 +24,5 @@ class InsightResult(BaseModel):
     suggested_activity: str
     required_materials: list[str]
     activity_duration: str
+    extracted_text: str | None = None
+    extracted_files: list[dict[str, str]] | None = None
