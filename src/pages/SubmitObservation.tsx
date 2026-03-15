@@ -5,7 +5,7 @@ import { Upload, Mic, Image, FileText, Send, Loader2, CheckCircle2, X } from "lu
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { analyzeObservation, uploadFile, InsightResult } from "@/services/api";
+import { analyzeObservation, uploadFiles, InsightResult } from "@/services/api";
 import ResultCard from "@/components/ResultCard";
 import { AlertTriangle, BookOpen, Clock, Package, Users } from "lucide-react";
 import { toast } from "sonner";
@@ -55,7 +55,7 @@ export default function SubmitObservation() {
     try {
       let data: InsightResult[];
       if (file) {
-        data = await uploadFile(file, language);
+        data = await uploadFiles([file], language);
       } else {
         data = await analyzeObservation({ text, language });
       }
